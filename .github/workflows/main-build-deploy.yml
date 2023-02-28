@@ -19,7 +19,7 @@ jobs:
       - name: Installing dependencies
         run: npm --prefix client install client
       - name: Building project
-        run: npm run build
+        run: npm --prefix client run build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -28,4 +28,4 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy to S3 bucket
-        run: aws s3 sync ./dist/ s3://game7-cotrib --delete
+        run: aws s3 sync ./client/build/ s3://game7-cotrib --delete
