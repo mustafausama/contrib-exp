@@ -1,42 +1,46 @@
 const { Pool } = require("pg");
 require("dotenv").config();
 
-const client = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS
-});
-
-console.log("Testing env", process.env);
-
-client
-  .connect()
-  .then((res) => {
-    console.log("connected");
-  })
-  .catch((err) => {
-    console.log("error");
-    console.error(err);
-  })
-  .finally(() => {
-    console.log("finally");
+const main = async () => {
+  const client = new Pool({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASS
   });
 
-const express = require("express");
+  console.log("Testing env", process.env);
 
-const app = express();
+  await client
+    .connect()
+    .then((res) => {
+      console.log("connected");
+    })
+    .catch((err) => {
+      console.log("error");
+      console.error(err);
+    })
+    .finally(() => {
+      console.log("finally");
+    });
 
-const PORT = process.env.PORT || 4000;
+  const express = require("express");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+  const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Hello!!");
-});
+  const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-  console.log("listening");
-});
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+
+  app.get("/", (req, res) => {
+    res.send("Hello!!");
+  });
+
+  app.listen(PORT, () => {
+    console.log("listening");
+  });
+};
+
+main();
