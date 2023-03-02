@@ -9,6 +9,8 @@ jobs:
   # To build the project
   build-client:
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_API_URI: ${{ secrets.REACT_APP_API_URI }}
     steps:
       - name: Checking out code
         uses: actions/checkout@v3

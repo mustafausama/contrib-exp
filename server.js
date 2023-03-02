@@ -9,6 +9,8 @@ const client = new Client({
   password: process.env.DB_PASS
 });
 
+console.log("Testing env", process.env);
+
 client
   .connect()
   .then((res) => {
