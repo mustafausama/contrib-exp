@@ -1,38 +1,18 @@
-const { Pool } = require("pg");
+const router = require("./routes");
+const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 
 const main = async () => {
-  const client = new Pool({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASS
-  });
-
-  console.log("Testing env", process.env);
-
-  await client
-    .connect()
-    .then((res) => {
-      console.log("connected");
-    })
-    .catch((err) => {
-      console.log("error");
-      console.error(err);
-    })
-    .finally(() => {
-      console.log("finally");
-    });
-
-  const express = require("express");
-
   const app = express();
 
   const PORT = process.env.PORT || 4000;
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+  app.use(cors());
+
+  app.use("/", router);
 
   app.get("/", (req, res) => {
     res.send("Hello!!");

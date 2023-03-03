@@ -5,20 +5,8 @@ import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
 import Contribution from "./Contrib";
 import Review from "./Review";
-import axios from "axios";
 
-function Dashbord() {
-  const [Contributions, setContributions] = useState([]);
-  const getContributions = async () => {
-    const { data } = await axios.get(
-      "https://jsonplaceholder.typicode.com/users"
-    );
-    setContributions(data);
-  };
-  useEffect(() => {
-    getContributions();
-  }, []);
-
+function Dashbord({ account, github }) {
   return (
     <div className="container border border-2 p-3">
       <Tab.Container id="left-tabs-example" defaultActiveKey="first">
@@ -36,10 +24,10 @@ function Dashbord() {
           <Col sm={9}>
             <Tab.Content>
               <Tab.Pane eventKey="first">
-                <Contribution />
+                <Contribution account={account} github={github} />
               </Tab.Pane>
               <Tab.Pane eventKey="second">
-                {Contributions && <Review data={Contributions} />}
+                <Review account={account} github={github} />
               </Tab.Pane>
             </Tab.Content>
           </Col>

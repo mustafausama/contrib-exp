@@ -1,13 +1,11 @@
 import Button from "react-bootstrap/esm/Button";
 
-function ROW({ id, Contribution }) {
+function ROW({ id, Contribution, review }) {
   const YESHandle = (e) => {
-    //
-    console.log("YES", id);
+    review(id, true);
   };
   const NOHandle = (e) => {
-    //
-    console.log("NO", id);
+    review(id, false);
   };
   return (
     <tr>
