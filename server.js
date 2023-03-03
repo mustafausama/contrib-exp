@@ -1,6 +1,8 @@
 const router = require("./routes");
 const express = require("express");
 const cors = require("cors");
+require("express-async-errors");
+
 require("dotenv").config();
 
 const main = async () => {
@@ -16,6 +18,14 @@ const main = async () => {
 
   app.get("/", (req, res) => {
     res.send("Hello!!");
+  });
+
+  app.use((err, _req, res) => {
+    console.log("== Error:", err);
+
+    res.status(500).send({
+      msg: "Internal server Error"
+    });
   });
 
   app.listen(PORT, () => {

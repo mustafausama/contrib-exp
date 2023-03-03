@@ -111,6 +111,7 @@ router.post("/contribution", async (req, res) => {
       msg: "Wallet connection, github authentication, and github contribution are required"
     });
   let github_username = await getGithubUsername(github_access_token);
+  console.log("Testing github username", github_username);
   if (!github_username)
     return res.status(401).send({
       msg: "Github authentication failed"
