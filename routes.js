@@ -68,6 +68,7 @@ const getGithubUsername = async (github_access_token) => {
         Authorization: `token ${github_access_token}`
       }
     });
+    console.log("GITHUB USER RESULT", gh_user.data);
     github_username = gh_user.data.login;
   } catch (err) {
     console.log(err);
@@ -222,7 +223,11 @@ router.post("/review", async (req, res) => {
     console.log(result1.rows);
     console.log(result2.rows);
     console.log(result3.rows);
-    if (result3.rowCount === 1 && result3.rows[0].accepted)
+    if (
+      result3.rowCount === 1 &&
+      result3.rows.length >= 1 &&
+      result3.rows[0].accepted
+    )
       contribTask2(result3.rows[0].wallet_address);
     res.status(200).json({ success: true });
   } catch (err) {
@@ -232,17 +237,21 @@ router.post("/review", async (req, res) => {
       msg: "Review error: the contribution you are reviewing might not exist or you may have reviewed it before"
     });
   }
-
-  try {
-    const reviewRewardQuery = `SELECT u.wallet_address FROM reviews r LEFT JOIN users u on u.id = r.user_id WHERE r.contribution_id = $1 AND r.score = $2;`;
-    const reviewRewardResult = await client.query(reviewRewardQuery, [
-      contribution,
-      result3.rows[0].accepted
-    ]);
-    reviewTask2(reviewRewardResult.rows);
-  } catch (err) {
-    console.log(err);
-  }
+  if (
+    result3.rowCount === 1 &&
+    result3.rows.length >= 1 &&
+    result3.rows[0].accepted
+  )
+    try {
+      const reviewRewardQuery = `SELECT u.wallet_address FROM reviews r LEFT JOIN users u on u.id = r.user_id WHERE r.contribution_id = $1 AND r.score = $2;`;
+      const reviewRewardResult = await client.query(reviewRewardQuery, [
+        contribution,
+        result3.rows[0].accepted
+      ]);
+      reviewTask2(reviewRewardResult.rows);
+    } catch (err) {
+      console.log(err);
+    }
 });
 
 module.exports = router;
