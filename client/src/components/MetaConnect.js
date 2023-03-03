@@ -82,11 +82,6 @@ const MetaConnect = () => {
     window.location.href = url;
   };
 
-  const handleGitHubCallback = async () => {
-    const code = new URLSearchParams(window.location.search).get("code");
-    setGithub(code);
-  };
-
   return (
     <Container>
       {!github ? (

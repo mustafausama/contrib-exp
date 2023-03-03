@@ -23,7 +23,7 @@ function Review({ account, github }) {
         alert(err.response.data.msg);
       }
     })();
-  }, [reviewd]);
+  }, [reviewd, account]);
 
   const onReview = async (id, accept) => {
     try {
