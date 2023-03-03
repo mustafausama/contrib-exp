@@ -1,6 +1,7 @@
 const router = require("./routes");
 const express = require("express");
 const cors = require("cors");
+const client = require("./database");
 require("express-async-errors");
 
 require("dotenv").config();
@@ -20,13 +21,11 @@ const main = async () => {
     res.send("Hello!!");
   });
 
-  app.use((err, _req, res) => {
-    console.log("== Error:", err);
-
-    res.status(500).send({
-      msg: "Internal server Error"
-    });
+  app.use((err, req, res, next) => {
+    console.log("== Error:", err.message);
   });
+
+  await client.connect();
 
   app.listen(PORT, () => {
     console.log("listening");

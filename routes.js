@@ -19,27 +19,27 @@ const summonAPIRequest = async (featureKey, walletAddress) => {
         }
       }
     );
-    console.log(res.data);
+    console.log("SUMMON", res.data);
   } catch (err) {
-    console.log(err);
+    console.log("Caught Error", err);
   }
 };
 
 const contribTask1 = async (wallet_address) => {
-  console.info("Rewarding:", wallet_address);
+  console.log("Rewarding:", wallet_address);
   summonAPIRequest("submit_contribution", wallet_address);
 };
 const contribTask2 = async (wallet_address) => {
-  console.info("Rewarding:", wallet_address);
+  console.log("Rewarding:", wallet_address);
   summonAPIRequest("win_contribution", wallet_address);
 };
 
 const reviewTask1 = async (wallet_address) => {
-  console.info("Rewarding:", wallet_address);
+  console.log("Rewarding:", wallet_address);
   summonAPIRequest("submit_review", wallet_address);
 };
 const reviewTask2 = async (wallet_address) => {
-  console.info("Rewarding:", wallet_address);
+  console.log("Rewarding:", wallet_address);
   wallet_address.forEach((address) => {
     summonAPIRequest("win_review", address.wallet_address);
   });
@@ -71,7 +71,7 @@ const getGithubUsername = async (github_access_token) => {
     console.log("GITHUB USER RESULT", gh_user.data);
     github_username = gh_user.data.login;
   } catch (err) {
-    console.log(err);
+    console.log("Caught Error", err);
     return null;
   }
   return github_username;
@@ -110,16 +110,28 @@ router.post("/contribution", async (req, res) => {
     return res.status(400).send({
       msg: "Wallet connection, github authentication, and github contribution are required"
     });
-  let github_username = await getGithubUsername(github_access_token);
-  console.log("Testing github username", github_username);
+  let github_username;
+  try {
+    github_username = await getGithubUsername(github_access_token);
+    console.log("Testing github username", github_username);
+  } catch (err) {
+    console.log("Caught Error", err);
+    return res.status(500).json({ msg: "Caught error" });
+  }
   if (!github_username)
     return res.status(401).send({
       msg: "Github authentication failed"
     });
 
-  await client.connect();
-
-  const user_id = await findOrCreateUser(wallet_address, github_username);
+  // await client.connect();
+  let user_id;
+  try {
+    user_id = await findOrCreateUser(wallet_address, github_username);
+    console.log("DATABASE USER ID", user_id);
+  } catch (err) {
+    console.log("Caught Error", err);
+    return res.status(500).json({ msg: "Caught error" });
+  }
   const threshold = 3;
 
   const queryText = `INSERT INTO contributions(user_id, description, threshold, score) VALUES($1, $2, $3, 0)`;
@@ -127,6 +139,7 @@ router.post("/contribution", async (req, res) => {
     await client.query(queryText, [user_id, contribution, threshold]);
     contribTask1(wallet_address);
   } catch (err) {
+    console.log("Caught Error", err);
     return res.status(400).json({
       msg: "Submission error: You may have submitted the same contribution before"
     });
@@ -141,7 +154,7 @@ router.get("/contribution", async (req, res) => {
     return res.status(400).send({
       msg: "Wallet connection is required"
     });
-  await client.connect();
+  // await client.connect();
 
   const queryText = `
     SELECT c.id AS id, c.description AS description
@@ -183,7 +196,7 @@ router.post("/review", async (req, res) => {
       msg: "Github authentication failed"
     });
 
-  await client.connect();
+  // await client.connect();
 
   const user_id = await findOrCreateUser(wallet_address, github_username);
 
