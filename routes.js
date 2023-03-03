@@ -19,7 +19,7 @@ const summonAPIRequest = async (featureKey, walletAddress) => {
         }
       }
     );
-    console.log("SUMMON", res.data);
+    console.log("SUMMON", walletAddress, featureKey, res.data);
   } catch (err) {
     console.log("Caught Error", err);
   }
@@ -251,11 +251,7 @@ router.post("/review", async (req, res) => {
       msg: "Review error: the contribution you are reviewing might not exist or you may have reviewed it before"
     });
   }
-  if (
-    result3.rowCount === 1 &&
-    result3.rows.length >= 1 &&
-    result3.rows[0].accepted
-  )
+  if (result3.rowCount === 1 && result3.rows.length >= 1)
     try {
       const reviewRewardQuery = `SELECT u.wallet_address FROM reviews r LEFT JOIN users u on u.id = r.user_id WHERE r.contribution_id = $1 AND r.score = $2;`;
       const reviewRewardResult = await client.query(reviewRewardQuery, [
