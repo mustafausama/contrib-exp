@@ -89,12 +89,14 @@ router.post("/github", async (req, res) => {
         }
       }
     );
+    console.log("Here testing:", gh_response.data);
     const gh_access_token = gh_response.data.access_token;
     if (!gh_access_token) throw new Error();
     return res
       .status(200)
       .json({ success: true, access_token: gh_access_token });
   } catch (err) {
+    console.log(err);
     return res.status(401).send({
       msg: "Github authentication failed"
     });
