@@ -132,7 +132,7 @@ router.post("/contribution", async (req, res) => {
     console.log("Caught Error", err);
     return res.status(500).json({ msg: "Caught error" });
   }
-  const threshold = 3;
+  const threshold = 1;
 
   const queryText = `INSERT INTO contributions(user_id, description, threshold, score) VALUES($1, $2, $3, 0)`;
   try {
