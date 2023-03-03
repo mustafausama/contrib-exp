@@ -64,6 +64,7 @@ jobs:
       
       - name: DB migrations
         run: |
+          npm install
           npm run migrate:prod:up
 
       - name: Deploy to Elastic Beanstalk
