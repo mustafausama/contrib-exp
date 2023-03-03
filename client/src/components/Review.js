@@ -44,7 +44,6 @@ function Review({ account, github }) {
       <thead>
         <tr>
           <th>Contributions</th>
-          {/* <th>Status</th> */}
           <th></th>
         </tr>
       </thead>
